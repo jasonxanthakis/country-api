@@ -26,12 +26,34 @@ A Country API that allows you to add, remove and view countries.
 
     - Run `npm install` to install all dependencies for the project
 
-### Running the Program
+4. Set up database
+
+  - Create a database instance on [Supabase](https://supabase.com/) (or other cloud-based database hosting platforms)
+  - Retrieve the database URL & copy it
+  - Create a `.env` file in the root directory with the following:
+  
+    ```
+    DB_URL=<your_database_url>
+    ```
+    
+  - Replace `<your_database_url>` with the database URL you just copied
+  - Run `npm run setup-db` to setup the database
+
+### Running the application
 
 1 . Navigate to the project directory
 
     - Navigate to the project with `cd country-api`
 
-2. Run with Node.js
+2. Run the server with Node.js
 
-    - Run the program on node.js with `node index.js`
+    - Run the server on node.js with `node index.js`
+
+### Database Schema
+
+`Country Table`
+
+country_id: Primary Key
+name: String, not null
+capital: String, not null
+population: Integer, not null
