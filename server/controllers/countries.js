@@ -29,4 +29,24 @@ const create = async (req, res) => {
     }
 };
 
-module.exports = { index, show, create };
+const update = async (req, res) => {
+    try {
+        const countryToUpdate = await Country.findByName(req.params.name);
+        const updatedCountry = await countryToUpdate.update(req.body);
+        res.status(200).send({data: updatedCountry});
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+const destroy = async (req, res) => {
+    try {
+        const countryToDestroy = await Country.findByName(req.params.name);
+        const response = await countryToDestroy.destroy();
+        res.status(200).end();
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+}
+
+module.exports = { index, show, create, update, destroy };

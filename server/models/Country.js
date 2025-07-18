@@ -19,9 +19,9 @@ class Country {
         return response.rows.map(c => new Country(c));
     };
 
-    static async findById(name) {
+    static async findByName(name) {
         try {
-            const response = await db.query("SELECT * FROM country WHERE name = $1", [name]);
+            const response = await db.query("SELECT * FROM country WHERE LOWER(name) = LOWER($1)", [name]);
             return new Country(response.rows[0]);
         } catch (err) {
             throw new Error('This country does not exist!');
@@ -37,19 +37,52 @@ class Country {
 
         if (!data.languages || data.languages.length === 0) { throw new Error('Languages are missing!'); };
 
-        if (!map_image_url) { throw new Error('Flag image is missing!'); };
+        if (!data.map_image_url) { throw new Error('Flag image is missing!'); };
 
-        const response = await db.query('INSERT INTO country (name, capital, population, languages, fun_fact, map_image_url) VALUES ($1, $2, $3, $4, $5, $6)', [data.name, data.capital, data.population, data.languages, data.fun_fact, data.map_image_url]);
-        return new Country(response.rows[0]);
+        const existing = await db.query('SELECT name FROM country WHERE LOWER(name) = LOWER($1)', [data.name]);
+
+        if (existing.rows.length === 0) {
+            const response = await db.query('INSERT INTO country (name, capital, population, languages, fun_fact, map_image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [data.name, data.capital, data.population, data.languages, data.fun_fact, data.map_image_url]);
+            return new Country(response.rows[0]);
+        } else {
+            throw new Error('Country already exists!');
+        }
     };
 
-    async update(data) {};
+    static createQuery(sql, data) {
+        let inject = '';
+        let i = 0;
+        for (const [key, value] of Object.entries(data)) {
+            inject = inject + `${key} = '${value}'`;
+            i++;
+            if (i < Object.entries(data).length) {
+                inject = inject + ', '
+            }
+        };
+
+        const permitted = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'];
+
+        return `UPDATE country SET ${inject} WHERE name = '${data.name}' RETURNING *`;
+    };
+
+    async update(data) {
+        const sql = Country.createQuery('', data);
+
+        try {
+            const response = await db.query(sql);
+            return new Country(response.rows[0]);
+        } catch (err) {
+            console.error(err);
+            throw new Error("Cannot update.");
+        }
+    };
 
     async destroy() {
         try {
-            const response = await db.query("DELETE FROM country WHERE id = $1 RETURNING *", [this.id]);
+            const response = await db.query("DELETE FROM country WHERE country_id = $1 RETURNING *", [this.country_id]);
             return new Country(response.rows[0]);
         } catch (err) {
+            console.error(err);
             throw new Error("Cannot delete.");
         };
     };

@@ -26,7 +26,7 @@ A Country API that allows you to add, remove and view countries.
 
     - Run `npm install` to install all dependencies for the project
 
-4. Set up database
+4. Setup your database
 
   - Create a database instance on [Supabase](https://supabase.com/) (or other cloud-based database hosting platforms)
   - Retrieve the database URL & copy it
@@ -39,34 +39,66 @@ A Country API that allows you to add, remove and view countries.
   - Replace `<your_database_url>` with the database URL you just copied
   - Run `npm run setup-db` to setup the database
 
-5. Set up your port
-
-- Add a `PORT` key assigned to the port of you choice in your `.env` file (port 3000 is recommended)
+5. Setup your port
+- Add a `PORT` key assigned to the port of your choice in your `.env` file. 3000 is recommended for this project
 
 ```
 PORT=<port-of-your-choice>
 ```
 
-6. Trial run the server
-
+6. Run the server
 - Run `npm run dev` to run the server in development mode
-- Run `npm run start` or `npm start` to run the server in produciton mode 
+- Run `npm start` to run the server in production mode
 
-### Running the application
+## API Endpoints
 
-1 . Navigate to the project directory
+All available API endpoints with their methods and descriptions.
 
-    - Navigate to the project with `cd country-api`
+### Base URL
+`http://localhost:<port>/countries` (or your deployed URL)
 
-2. Run the server with Node.js
+### API Endpoints
 
-    - Run the server on node.js with `node index.js`
+| Method | Endpoint                  | Description                  |
+|--------|---------------------------|------------------------------|
+| GET    | /countries                | Retrieves all countries          |
+| GET    | /countries/:name            | Retrieves a single country      |
+| POST   | /countries                | Creates a new country           |
+| DELETE | /countries/:name            | Deletes a country               |
 
-### Database Schema
+## Get all countries
 
-`Country Table`
+### Example Request
 
-country_id: Primary Key
-name: String, not null
-capital: String, not null
-population: Integer, not null
+To retrieve all countries, you can use the following GET request:
+
+`GET /countries`
+
+`curl -X GET http://localhost:<port>/countries`
+
+### Example Response
+
+A successful response will return a JSON array of countries objects, similar to the following:
+      
+    ```json
+    [
+        {
+          "id": 1,
+          "name": "country1",
+          "capital": "capital1",
+          "population": 1,
+          "languages": "language1",
+          "fun_fact": "fact1",
+          "map_image_url": "url1"
+        },
+        {
+          "id": 2,
+          "name": "country2",
+          "capital": "capital2",
+          "population": 2,
+          "languages": "language2",
+          "fun_fact": "fact2",
+          "map_image_url": "url2"
+        },
+    ]
+    ```
