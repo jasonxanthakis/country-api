@@ -39,6 +39,19 @@ A Country API that allows you to add, remove and view countries.
   - Replace `<your_database_url>` with the database URL you just copied
   - Run `npm run setup-db` to setup the database
 
+5. Set up your port
+
+- Add a `PORT` key assigned to the port of you choice in your `.env` file (port 3000 is recommended)
+
+```
+PORT=<port-of-your-choice>
+```
+
+6. Trial run the server
+
+- Run `npm run dev` to run the server in development mode
+- Run `npm run start` or `npm start` to run the server in produciton mode 
+
 ### Running the application
 
 1 . Navigate to the project directory
