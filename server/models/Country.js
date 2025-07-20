@@ -49,30 +49,24 @@ class Country {
         }
     };
 
-    static createQuery(sql, data) {
-        let inject = '';
-        let i = 0;
-        for (const [key, value] of Object.entries(data)) {
-            inject = inject + `${key} = '${value}'`;
-            i++;
-            if (i < Object.entries(data).length) {
-                inject = inject + ', '
-            }
-        };
+    static createQuery(id, data) {
+        const keys = Object.keys(data);
+        const values = keys.map(key => data[key].toString());
 
-        const permitted = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'];
+        const inject = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
 
-        return `UPDATE country SET ${inject} WHERE name = '${data.name}' RETURNING *`;
+        let sqlStatement = `UPDATE country SET ${inject} WHERE country_id = '${id}' RETURNING *;`;
+        return { sql: sqlStatement, values };
     };
 
     async update(data) {
-        const sql = Country.createQuery('', data);
+        const {sql, values} = Country.createQuery(this.country_id, data);
 
         try {
-            const response = await db.query(sql);
+            const response = await db.query(sql, values);
             return new Country(response.rows[0]);
         } catch (err) {
-            console.error(err);
+            console.log(err);
             throw new Error("Cannot update.");
         }
     };
